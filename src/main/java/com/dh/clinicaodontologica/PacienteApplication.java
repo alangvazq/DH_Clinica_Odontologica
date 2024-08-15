@@ -13,9 +13,4 @@ public class PacienteApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(PacienteApplication.class, args);
 	}
-
-	@GetMapping("paciente")
-	public String holaPAciente(){
-		return "Hola Paciente";
-	}
 }
