@@ -5,3 +5,12 @@ CREATE TABLE IF NOT EXISTS domicilios (
     localidad VARCHAR(100) NOT NULL,
     provincia VARCHAR(100) NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS pacientes (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100) NOT NULL,
+    dni VARCHAR(100) NOT NULL,
+    fecha_alta DATE NOT NULL,
+    domicilio_id BIGINT NOT NULL
+);

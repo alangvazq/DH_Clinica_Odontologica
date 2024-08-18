@@ -13,6 +13,7 @@ public class BDUtilidades {
 
     private static String REINICIAR_BB = """
             TRUNCATE TABLE domicilios RESTART IDENTITY;
+            TRUNCATE TABLE pacientes RESTART IDENTITY;
         """;
 
     public static Connection getConexion() throws Exception {
