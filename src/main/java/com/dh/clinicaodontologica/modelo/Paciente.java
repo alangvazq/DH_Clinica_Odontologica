@@ -7,25 +7,28 @@ public class Paciente {
     private Long id;
     private String nombre;
     private String apellido;
-    private Domicilio domicilio;
     private String dni;
     private LocalDate fechaAlta;
+    private Domicilio domicilio;
 
-    public Paciente(Long id, String nombre, String apellido, Domicilio domicilio, String dni, LocalDate fechaAlta) {
+    public Paciente() {
+    }
+
+    public Paciente(Long id, String nombre, String apellido, String dni, LocalDate fechaAlta, Domicilio domicilio) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
-        this.domicilio = domicilio;
         this.dni = dni;
         this.fechaAlta = fechaAlta;
+        this.domicilio = domicilio;
     }
 
-    public Paciente(String nombre, String apellido, Domicilio domicilio, String dni, LocalDate fechaAlta) {
+    public Paciente(String nombre, String apellido, String dni, LocalDate fechaAlta, Domicilio domicilio) {
         this.nombre = nombre;
         this.apellido = apellido;
-        this.domicilio = domicilio;
         this.dni = dni;
         this.fechaAlta = fechaAlta;
+        this.domicilio = domicilio;
     }
 
     public Long getId() {
@@ -82,9 +85,9 @@ public class Paciente {
                 "id=" + id +
                 ", nombre='" + nombre + '\'' +
                 ", apellido='" + apellido + '\'' +
-                ", domicilio=" + domicilio +
                 ", dni='" + dni + '\'' +
                 ", fechaAlta=" + fechaAlta +
+                ", domicilio=" + domicilio +
                 '}';
     }
 

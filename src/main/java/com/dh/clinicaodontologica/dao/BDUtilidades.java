@@ -2,6 +2,7 @@ package com.dh.clinicaodontologica.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 public class BDUtilidades {
@@ -16,12 +17,12 @@ public class BDUtilidades {
             TRUNCATE TABLE pacientes RESTART IDENTITY;
         """;
 
-    public static Connection getConexion() throws Exception {
+    public static Connection getConexion() throws ClassNotFoundException, SQLException {
         Class.forName(CONTROLADOR);
         return DriverManager.getConnection(URL, USUARIO, CONTRASENIA);
     }
 
-    public static void limpiarBaseDatos() throws Exception {
+    public static void limpiarBaseDatos() throws ClassNotFoundException, SQLException {
         try (Connection conn = BDUtilidades.getConexion();
              Statement stmt = conn.createStatement()
         ) {
