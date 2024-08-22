@@ -14,3 +14,10 @@ CREATE TABLE IF NOT EXISTS pacientes (
     fecha_alta DATE NOT NULL,
     domicilio_id BIGINT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS odontologos (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100) NOT NULL,
+    matricula VARCHAR(100) NOT NULL
+);
