@@ -5,16 +5,13 @@ import com.dh.clinicaodontologica.dao.IDao;
 import com.dh.clinicaodontologica.modelo.Odontologo;
 import org.apache.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class OdontologoDaoH2 implements IDao<Odontologo, Long> {
-    private static final Logger LOGGER = Logger.getLogger(PacienteDaoH2.class);
+    private static final Logger LOGGER = Logger.getLogger(OdontologoDaoH2.class);
 
     @Override
     public List<Odontologo> listar() {
@@ -74,13 +71,19 @@ public class OdontologoDaoH2 implements IDao<Odontologo, Long> {
         String INSERT_ODONTOLOGO = "INSERT INTO odontologos (nombre, apellido, matricula) VALUES (?, ?, ?);";
         try (
                 Connection con = BDUtilidades.getConexion();
-                PreparedStatement pstmt = con.prepareStatement(INSERT_ODONTOLOGO)
+                PreparedStatement pstmt = con.prepareStatement(INSERT_ODONTOLOGO, Statement.RETURN_GENERATED_KEYS)
         ) {
             pstmt.setString(1, odontologo.getNombre());
             pstmt.setString(2, odontologo.getApellido());
             pstmt.setString(3, odontologo.getMatricula());
             pstmt.executeUpdate();
-            LOGGER.info("Odontologo agregado: " + odontologo);
+
+            try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    odontologo.setId(rs.getLong(1));
+                    LOGGER.info("Odontologo agregado: " + odontologo);
+                }
+            }
             return odontologo;
         } catch (SQLException | ClassNotFoundException e) {
             LOGGER.error("Error agregando odontologo", e);

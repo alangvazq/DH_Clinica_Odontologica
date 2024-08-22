@@ -1,5 +1,7 @@
 package com.dh.clinicaodontologica.modelo;
 
+import java.util.Objects;
+
 public class Odontologo {
     private Long id;
     private String nombre;
@@ -11,6 +13,15 @@ public class Odontologo {
         this.nombre = nombre;
         this.apellido = apellido;
         this.matricula = matricula;
+    }
+
+    public Odontologo(String nombre, String apellido, String matricula) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.matricula = matricula;
+    }
+
+    public Odontologo() {
     }
 
     public Long getId() {
@@ -53,5 +64,18 @@ public class Odontologo {
                 ", apellido='" + apellido + '\'' +
                 ", matricula='" + matricula + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Odontologo that = (Odontologo) o;
+        return Objects.equals(id, that.id) && Objects.equals(nombre, that.nombre) && Objects.equals(apellido, that.apellido) && Objects.equals(matricula, that.matricula);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nombre, apellido, matricula);
     }
 }
