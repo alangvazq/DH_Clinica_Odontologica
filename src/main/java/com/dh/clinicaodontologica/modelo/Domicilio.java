@@ -9,6 +9,9 @@ public class Domicilio {
     private String localidad;
     private String provincia;
 
+    public Domicilio() {
+    }
+
     public Domicilio(Long id, String calle, String numero, String localidad, String provincia) {
         this.id = id;
         this.calle = calle;

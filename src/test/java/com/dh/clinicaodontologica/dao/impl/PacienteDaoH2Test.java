@@ -30,18 +30,18 @@ class PacienteDaoH2Test {
                 new Paciente(
                         "Juan",
                         "Perez",
-                        new Domicilio("Calle Falsa", "123", "Springfield", "IL"),
                         "12345678",
-                        LocalDate.now()
+                        LocalDate.now(),
+                        new Domicilio("Calle Falsa", "123", "Springfield", "IL")
                 ));
 
         Paciente paciente2 = pacienteDao.agregar(
                 new Paciente(
                         "Maria",
                         "Lopez",
-                        new Domicilio("Avenida Siempre Viva", "742", "Springfield", "IL"),
                         "87654321",
-                        LocalDate.now()
+                        LocalDate.now(),
+                        new Domicilio("Avenida Siempre Viva", "742", "Springfield", "IL")
                 ));
 
         List<Paciente> pacientes = pacienteDao.listar();
@@ -64,9 +64,9 @@ class PacienteDaoH2Test {
                 new Paciente(
                         "Juan",
                         "Perez",
-                        new Domicilio("Calle Falsa", "123", "Springfield", "IL"),
                         "12345678",
-                        LocalDate.now()
+                        LocalDate.now(),
+                        new Domicilio("Calle Falsa", "123", "Springfield", "IL")
                 ));
 
         Paciente pacienteGuardado = pacienteDao.buscar(pacienteEsperado.getId()).orElse(null);
@@ -87,9 +87,9 @@ class PacienteDaoH2Test {
         Paciente pacienteEsperado = new Paciente(
                 "Juan",
                 "Perez",
-                new Domicilio("Calle Falsa", "123", "Springfield", "IL"),
                 "12345678",
-                LocalDate.now()
+                LocalDate.now(),
+                new Domicilio("Calle Falsa", "123", "Springfield", "IL")
             );
 
         Paciente pacienteGuardado = pacienteDao.agregar(pacienteEsperado);
@@ -110,9 +110,9 @@ class PacienteDaoH2Test {
                 new Paciente(
                         "Juan",
                         "Perez",
-                        new Domicilio("Calle Falsa", "123", "Springfield", "IL"),
                         "12345678",
-                        LocalDate.now()
+                        LocalDate.now(),
+                        new Domicilio("Calle Falsa", "123", "Springfield", "IL")
                 ));
 
         pacienteEsperado.setNombre("Juan Actualizado");
@@ -137,9 +137,9 @@ class PacienteDaoH2Test {
                 new Paciente(
                     "Juan",
                     "Perez",
-                    new Domicilio("Calle Para Borrar", "789", "Springfield", "IL"),
                     "12345678",
-                    LocalDate.now()
+                    LocalDate.now(),
+                    new Domicilio("Calle Para Borrar", "789", "Springfield", "IL")
                 ));
 
         pacienteDao.eliminar(paciente.getId());

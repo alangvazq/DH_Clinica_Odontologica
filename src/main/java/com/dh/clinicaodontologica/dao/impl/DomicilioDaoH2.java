@@ -5,10 +5,7 @@ import com.dh.clinicaodontologica.dao.IDao;
 import com.dh.clinicaodontologica.modelo.Domicilio;
 import org.apache.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -17,12 +14,12 @@ public class DomicilioDaoH2 implements IDao<Domicilio, Long> {
     private static final Logger LOGGER = Logger.getLogger(DomicilioDaoH2.class);
 
     @Override
-    public List<Domicilio> listar() throws Exception {
+    public List<Domicilio> listar() {
         String SELECT_DOMICILIOS = "SELECT * FROM domicilios;";
         List<Domicilio> domicilios = new ArrayList<>();
 
-        try (Connection conexion = BDUtilidades.getConexion();
-             PreparedStatement pstmt = conexion.prepareStatement(SELECT_DOMICILIOS);
+        try (Connection con = BDUtilidades.getConexion();
+             PreparedStatement pstmt = con.prepareStatement(SELECT_DOMICILIOS);
              ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
@@ -36,20 +33,20 @@ public class DomicilioDaoH2 implements IDao<Domicilio, Long> {
                 domicilios.add(domicilio);
                 LOGGER.info("Domicilio encontrado: " + domicilio);
             }
-        } catch (Exception e) {
+        } catch (SQLException | ClassNotFoundException e) {
             LOGGER.error("Error listando domicilios", e);
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage());
         }
         return domicilios;
     }
 
     @Override
-    public Optional<Domicilio> buscar(Long id) throws Exception {
+    public Optional<Domicilio> buscar(Long id) {
         String SELECT_DOMICILIO = "SELECT * FROM domicilios WHERE id = ?;";
         Domicilio domicilio = null;
         try (
-                Connection conn = BDUtilidades.getConexion();
-                PreparedStatement pstmt = conn.prepareStatement(SELECT_DOMICILIO)
+                Connection con = BDUtilidades.getConexion();
+                PreparedStatement pstmt = con.prepareStatement(SELECT_DOMICILIO)
         ) {
             pstmt.setLong(1, id);
             try(ResultSet rs = pstmt.executeQuery()) {
@@ -65,18 +62,18 @@ public class DomicilioDaoH2 implements IDao<Domicilio, Long> {
                 }
             }
             return Optional.ofNullable(domicilio);
-        } catch (Exception e) {
+        } catch (SQLException | ClassNotFoundException e) {
             LOGGER.error("Error buscando domicilio de id: " + id, e);
-            throw e;
+            throw new RuntimeException(e.getMessage());
         }
     }
 
     @Override
-    public Domicilio agregar(Domicilio domicilio) throws Exception {
+    public Domicilio agregar(Domicilio domicilio) {
         String INSERT_DOMICILIO = "INSERT INTO domicilios (calle, numero, localidad, provincia) VALUES (?, ?, ?, ?);";
         try (
-                Connection conn = BDUtilidades.getConexion();
-                PreparedStatement pstmt = conn.prepareStatement(INSERT_DOMICILIO, Statement.RETURN_GENERATED_KEYS)
+                Connection con = BDUtilidades.getConexion();
+                PreparedStatement pstmt = con.prepareStatement(INSERT_DOMICILIO, Statement.RETURN_GENERATED_KEYS)
         ) {
             pstmt.setString(1, domicilio.getCalle());
             pstmt.setString(2, domicilio.getNumero());
@@ -91,18 +88,18 @@ public class DomicilioDaoH2 implements IDao<Domicilio, Long> {
                 }
             }
             return domicilio;
-        } catch (Exception e) {
+        } catch (SQLException | ClassNotFoundException e) {
             LOGGER.error("Error creando domicilio: " + domicilio, e);
-            throw e;
+            throw new RuntimeException(e.getMessage());
         }
     }
 
     @Override
-    public Domicilio modificar(Domicilio domicilio) throws Exception {
+    public Domicilio modificar(Domicilio domicilio) {
         String UPDATE_DOMICILIO = "UPDATE domicilios SET calle = ?, numero = ?, localidad = ?, provincia = ? WHERE id = ?;";
         try (
-                Connection conn = BDUtilidades.getConexion();
-                PreparedStatement pstmt = conn.prepareStatement(UPDATE_DOMICILIO)
+                Connection con = BDUtilidades.getConexion();
+                PreparedStatement pstmt = con.prepareStatement(UPDATE_DOMICILIO)
         ) {
             pstmt.setString(1, domicilio.getCalle());
             pstmt.setString(2, domicilio.getNumero());
@@ -114,24 +111,24 @@ public class DomicilioDaoH2 implements IDao<Domicilio, Long> {
             LOGGER.info("Domicilio modificado: " + domicilio);
 
             return domicilio;
-        } catch (Exception e) {
+        } catch (SQLException | ClassNotFoundException e) {
             LOGGER.error("Error modificando domicilio de id: " + domicilio.getId(), e);
-            throw e;
+            throw new RuntimeException(e.getMessage());
         }
     }
 
     @Override
-    public void eliminar(Long id) throws Exception {
+    public void eliminar(Long id) {
         String DELETE_DOMICILIO = "DELETE FROM domicilios WHERE id = ?;";
-        try (Connection connection = BDUtilidades.getConexion();
-             PreparedStatement pstmt = connection.prepareStatement(DELETE_DOMICILIO)
+        try (Connection con = BDUtilidades.getConexion();
+             PreparedStatement pstmt = con.prepareStatement(DELETE_DOMICILIO)
         ) {
             pstmt.setLong(1, id);
             pstmt.executeUpdate();
             LOGGER.info("Id de domicilio eliminado: " + id);
-        } catch (Exception e) {
+        } catch (SQLException | ClassNotFoundException e) {
             LOGGER.error("Error modificando domicilio de id: " + id, e);
-            throw e;
+            throw new RuntimeException(e.getMessage());
         }
     }
 }

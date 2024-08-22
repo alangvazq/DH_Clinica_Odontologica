@@ -5,9 +5,9 @@ import com.dh.clinicaodontologica.modelo.Paciente;
 import java.util.List;
 
 public interface IPacienteServicio {
-    List<Paciente> listar() throws Exception;
-    Paciente buscar(Long id) throws Exception;
-    Paciente agregar(Paciente paciente) throws Exception;
-    Paciente modificar(Paciente paciente) throws Exception;
-    void eliminar(Long id) throws Exception;
+    List<Paciente> listar();
+    Paciente buscar(Long id);
+    Paciente agregar(Paciente paciente);
+    Paciente modificar(Paciente paciente);
+    void eliminar(Long id);
 }
