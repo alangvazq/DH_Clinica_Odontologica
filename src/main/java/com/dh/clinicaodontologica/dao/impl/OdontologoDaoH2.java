@@ -17,7 +17,7 @@ public class OdontologoDaoH2 implements IDao<Odontologo, Long> {
 
 
     @Override
-    public List<Odontologo> listar() throws Exception {
+    public List<Odontologo> listar() {
         String SELECT_ODONTOLOGOS = "SELECT * FROM odontologos;";
         List<Odontologo> odontologos = new ArrayList<>();
 
@@ -42,22 +42,22 @@ public class OdontologoDaoH2 implements IDao<Odontologo, Long> {
     }
 
     @Override
-    public Optional<Odontologo> buscar(Long id) throws Exception {
+    public Optional<Odontologo> buscar(Long id) {
         return Optional.empty();
     }
 
     @Override
-    public Odontologo agregar(Odontologo odontologo) throws Exception {
+    public Odontologo agregar(Odontologo odontologo) {
         return null;
     }
 
     @Override
-    public Odontologo modificar(Odontologo odontologo) throws Exception {
+    public Odontologo modificar(Odontologo odontologo) {
         return null;
     }
 
     @Override
-    public void eliminar(Long id) throws Exception {
+    public void eliminar(Long id) {
 
     }
 }
