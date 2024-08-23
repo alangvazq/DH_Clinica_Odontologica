@@ -3,12 +3,16 @@ package com.dh.clinicaodontologica.servicio.impl;
 import com.dh.clinicaodontologica.dao.IDao;
 import com.dh.clinicaodontologica.modelo.Odontologo;
 import com.dh.clinicaodontologica.servicio.IOdontologoServicio;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class OdontologoServicioImpl implements IOdontologoServicio {
     private final IDao<Odontologo, Long> odontologoDao;
 
+    @Autowired
     public OdontologoServicioImpl(IDao<Odontologo, Long> odontologoDao) {
         this.odontologoDao = odontologoDao;
     }
