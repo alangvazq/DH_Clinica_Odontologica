@@ -2,8 +2,6 @@ package com.dh.clinicaodontologica.dao.impl;
 
 import com.dh.clinicaodontologica.dao.BDUtilidades;
 import com.dh.clinicaodontologica.dao.IDao;
-import com.dh.clinicaodontologica.modelo.Domicilio;
-import com.dh.clinicaodontologica.modelo.Paciente;
 import org.apache.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
