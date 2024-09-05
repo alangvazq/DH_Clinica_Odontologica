@@ -1,9 +1,9 @@
 package com.dh.clinicaodontologica.controlador;
 
-import com.dh.clinicaodontologica.dao.impl.OdontologoDaoH2;
+
 import com.dh.clinicaodontologica.modelo.Odontologo;
 import com.dh.clinicaodontologica.servicio.IOdontologoServicio;
-import com.dh.clinicaodontologica.servicio.impl.OdontologoServicioImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,11 +13,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/odontologos")
 public class OdontologoControlador {
-    private final IOdontologoServicio odontologoServicio;
-
-    public OdontologoControlador() {
-        this.odontologoServicio = new OdontologoServicioImpl(new OdontologoDaoH2());
-    }
+    @Autowired
+    private IOdontologoServicio odontologoServicio;
 
     @GetMapping
     public ResponseEntity<List<Odontologo>> listar(){

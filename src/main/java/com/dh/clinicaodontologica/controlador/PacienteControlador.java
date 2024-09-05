@@ -1,7 +1,5 @@
 package com.dh.clinicaodontologica.controlador;
 
-import com.dh.clinicaodontologica.dao.impl.DomicilioDaoH2;
-import com.dh.clinicaodontologica.dao.impl.PacienteDaoH2;
 import com.dh.clinicaodontologica.modelo.Paciente;
 import com.dh.clinicaodontologica.servicio.IPacienteServicio;
 import com.dh.clinicaodontologica.servicio.impl.PacienteServicioImpl;
@@ -17,7 +15,7 @@ public class PacienteControlador {
     private final IPacienteServicio pacienteServicio;
 
     public PacienteControlador() {
-        this.pacienteServicio = new PacienteServicioImpl(new PacienteDaoH2(new DomicilioDaoH2()));
+        this.pacienteServicio = new PacienteServicioImpl();
     }
 
     @GetMapping

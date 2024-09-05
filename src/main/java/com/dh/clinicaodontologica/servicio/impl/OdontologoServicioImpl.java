@@ -1,8 +1,9 @@
 package com.dh.clinicaodontologica.servicio.impl;
 
-import com.dh.clinicaodontologica.dao.IDao;
 import com.dh.clinicaodontologica.modelo.Odontologo;
+import com.dh.clinicaodontologica.repositorio.IOdontologoRepositorio;
 import com.dh.clinicaodontologica.servicio.IOdontologoServicio;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,35 +11,50 @@ import java.util.List;
 
 @Service
 public class OdontologoServicioImpl implements IOdontologoServicio {
-    private final IDao<Odontologo, Long> odontologoDao;
-
+    private static final Logger LOGGER = Logger.getLogger(OdontologoServicioImpl.class);
     @Autowired
-    public OdontologoServicioImpl(IDao<Odontologo, Long> odontologoDao) {
-        this.odontologoDao = odontologoDao;
-    }
+    private IOdontologoRepositorio iOdontologoRepositorio;
 
     @Override
     public List<Odontologo> listar() {
-        return odontologoDao.listar();
+        LOGGER.info("Listar todos los odontólogos");
+        List<Odontologo> odontologos = iOdontologoRepositorio.findAll();
+        LOGGER.info("Cantidad de odontólogos encontrados: " + odontologos.size());
+        return odontologos;
     }
 
     @Override
     public Odontologo buscar(Long id) {
-        return odontologoDao.buscar(id).orElse(null);
+        LOGGER.info("Buscar odontólogo con ID: " + id);
+        Odontologo odontologo = iOdontologoRepositorio.findById(id).orElse(null);
+        if (odontologo != null) {
+            LOGGER.info("Odontólogo encontrado: " + odontologo);
+        } else {
+            LOGGER.warn("Odontólogo con ID " + id + " no encontrado");
+        }
+        return odontologo;
     }
 
     @Override
     public Odontologo agregar(Odontologo odontologo) {
-        return odontologoDao.agregar(odontologo);
+        LOGGER.info("Agregar nuevo odontólogo: " + odontologo);
+        Odontologo odontologoAgregado = iOdontologoRepositorio.save(odontologo);
+        LOGGER.info("Odontólogo agregado con ID: " + odontologoAgregado.getId());
+        return odontologoAgregado;
     }
 
     @Override
     public Odontologo modificar(Odontologo odontologo) {
-        return odontologoDao.modificar(odontologo);
+        LOGGER.info("Modificar odontólogo: " + odontologo);
+        Odontologo odontologoModificado = iOdontologoRepositorio.save(odontologo);
+        LOGGER.info("Odontólogo modificado con ID: " + odontologoModificado.getId());
+        return odontologoModificado;
     }
 
     @Override
     public void eliminar(Long id) {
-        odontologoDao.eliminar(id);
+        LOGGER.info("Eliminar odontólogo con ID: " + id);
+        iOdontologoRepositorio.deleteById(id);
+        LOGGER.info("Odontólogo con ID " + id + " eliminado");
     }
 }
