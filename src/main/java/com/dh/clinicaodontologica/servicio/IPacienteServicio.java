@@ -1,13 +1,13 @@
 package com.dh.clinicaodontologica.servicio;
 
-import com.dh.clinicaodontologica.modelo.Paciente;
+import com.dh.clinicaodontologica.modelo.dto.PacienteDto;
 
 import java.util.List;
 
 public interface IPacienteServicio {
-    List<Paciente> listar();
-    Paciente buscar(Long id);
-    Paciente agregar(Paciente paciente);
-    Paciente modificar(Paciente paciente);
-    void eliminar(Long id);
+    List<PacienteDto> listar();
+    PacienteDto buscar(Long pacienteId);
+    PacienteDto agregar(PacienteDto datosPaciente);
+    PacienteDto modificar(Long pacienteId, PacienteDto datosPaciente);
+    void eliminar(Long pacienteId);
 }

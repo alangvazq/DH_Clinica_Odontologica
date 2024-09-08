@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/turnos")
 public class TurnoControlador {
-    private ITurnoServicio turnoServicio;
+    private final ITurnoServicio turnoServicio;
 
     @Autowired
     public TurnoControlador(ITurnoServicio turnoServicio) {
