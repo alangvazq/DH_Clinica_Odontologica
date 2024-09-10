@@ -47,15 +47,29 @@ public class TurnoServicioImpl implements ITurnoServicio {
         Odontologo odontologo = odontologoRepositorio.findById(datosTurno.getOdontologo().getId()).orElse(null);
         Paciente paciente = pacienteRepositorio.findById(datosTurno.getPaciente().getId()).orElse(null);
 
-        if (odontologo != null && paciente != null) {
-            Turno turno = turnoMapper.dtoATurno(datosTurno);
-            turno.setOdontologo(odontologo);
-            turno.setPaciente(paciente);
-            Turno turnoGuardado = turnoRepositorio.save(turno);
-            return turnoMapper.turnoADto(turnoGuardado);
-        } else {
-            throw ApiExcepcion.recursoNoEncontrado("Odontólogo o paciente no encontrado");
+        if (odontologo == null){
+            throw ApiExcepcion.recursoNoEncontrado("Odontólogo no encontrado");
         }
+
+        if (paciente == null){
+            throw ApiExcepcion.recursoNoEncontrado("Paciente no encontrado");
+        }
+
+        Turno turno = turnoMapper.dtoATurno(datosTurno);
+        turno.setOdontologo(odontologo);
+        turno.setPaciente(paciente);
+        Turno turnoGuardado = turnoRepositorio.save(turno);
+        return turnoMapper.turnoADto(turnoGuardado);
+
+//        if (odontologo != null && paciente != null) {
+//            Turno turno = turnoMapper.dtoATurno(datosTurno);
+//            turno.setOdontologo(odontologo);
+//            turno.setPaciente(paciente);
+//            Turno turnoGuardado = turnoRepositorio.save(turno);
+//            return turnoMapper.turnoADto(turnoGuardado);
+//        } else {
+//            throw ApiExcepcion.recursoNoEncontrado("Odontólogo o paciente no encontrado");
+//        }
     }
 
     @Override
@@ -64,8 +78,22 @@ public class TurnoServicioImpl implements ITurnoServicio {
         Turno turno = turnoRepositorio.findById(turnoId).orElseThrow(() ->
                 ApiExcepcion.recursoNoEncontrado(String.format("El turno de id: %d no existe", turnoId))
         );
-        turnoMapper.actualizarTurnoDesdeDto(turno, datosTurno);
-        return turnoMapper.turnoADto(turnoRepositorio.save(turno));
+        Odontologo odontologo = odontologoRepositorio.findById(datosTurno.getOdontologo().getId()).orElse(null);
+        Paciente paciente = pacienteRepositorio.findById(datosTurno.getPaciente().getId()).orElse(null);
+
+        if (odontologo == null){
+            throw ApiExcepcion.recursoNoEncontrado("Odontólogo no encontrado");
+        }
+
+        if (paciente == null){
+            throw ApiExcepcion.recursoNoEncontrado("Paciente no encontrado");
+        }
+
+        turno.setOdontologo(odontologo);
+        turno.setPaciente(paciente);
+        turno.setFecha(datosTurno.getFecha());
+        Turno turnoGuardado = turnoRepositorio.save(turno);
+        return turnoMapper.turnoADto(turnoGuardado);
     }
 
     @Override
