@@ -60,16 +60,6 @@ public class TurnoServicioImpl implements ITurnoServicio {
         turno.setPaciente(paciente);
         Turno turnoGuardado = turnoRepositorio.save(turno);
         return turnoMapper.turnoADto(turnoGuardado);
-
-//        if (odontologo != null && paciente != null) {
-//            Turno turno = turnoMapper.dtoATurno(datosTurno);
-//            turno.setOdontologo(odontologo);
-//            turno.setPaciente(paciente);
-//            Turno turnoGuardado = turnoRepositorio.save(turno);
-//            return turnoMapper.turnoADto(turnoGuardado);
-//        } else {
-//            throw ApiExcepcion.recursoNoEncontrado("Odontólogo o paciente no encontrado");
-//        }
     }
 
     @Override
