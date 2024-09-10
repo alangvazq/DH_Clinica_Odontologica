@@ -38,7 +38,7 @@ public class PacienteControlador {
     }
 
     @PutMapping("/{pacienteId}")
-    public ResponseEntity<PacienteDto> modificar(@PathVariable Long pacienteId, @RequestBody PacienteDto datosPaciente) {
+    public ResponseEntity<PacienteDto> modificar(@PathVariable Long pacienteId, @Valid @RequestBody PacienteDto datosPaciente) {
         log.debug("Modificando paciente - Controlador");
         return ResponseEntity.ok(pacienteServicio.modificar(pacienteId, datosPaciente));
     }
