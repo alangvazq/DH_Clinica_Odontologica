@@ -19,7 +19,7 @@ public class ExcepcionControlador {
     // Error 400
     // Cuando alguno de los datos de la petición falla las validaciones de formato
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<RespuestaErrorDto> manejarDatosInvalidos(
+    public ResponseEntity<RespuestaDatosInvalidosDto> manejarDatosInvalidos(
             MethodArgumentNotValidException excepcion,
             HttpServletRequest peticion
     ) {
