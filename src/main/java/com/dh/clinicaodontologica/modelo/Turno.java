@@ -1,50 +1,30 @@
 package com.dh.clinicaodontologica.modelo;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 
 @Entity
+@Table(name = "turnos")
+@Getter
+@Setter
+@ToString
 public class Turno {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-//    private Odontologo odontologo;
-//    private Paciente paciente;
+
+    @ManyToOne
+    @JoinColumn(name = "odontologo_id", nullable = false)
+    private Odontologo odontologo;
+
+    @ManyToOne
+    @JoinColumn(name = "paciente_id", nullable = false)
+    private Paciente paciente;
+
+    @Column(name = "fecha_alta")
     private LocalDate fecha;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-//    public Odontologo getOdontologo() {
-//        return odontologo;
-//    }
-//
-//    public void setOdontologo(Odontologo odontologo) {
-//        this.odontologo = odontologo;
-//    }
-//
-//    public Paciente getPaciente() {
-//        return paciente;
-//    }
-//
-//    public void setPaciente(Paciente paciente) {
-//        this.paciente = paciente;
-//    }
-
-    public LocalDate getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(LocalDate fecha) {
-        this.fecha = fecha;
-    }
 }
