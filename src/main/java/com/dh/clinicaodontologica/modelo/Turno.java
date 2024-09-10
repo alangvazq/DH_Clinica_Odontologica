@@ -25,6 +25,6 @@ public class Turno {
     @JoinColumn(name = "paciente_id", nullable = false)
     private Paciente paciente;
 
-    @Column(name = "fecha_alta")
+    @Column(name = "fecha_turno")
     private LocalDate fecha;
 }

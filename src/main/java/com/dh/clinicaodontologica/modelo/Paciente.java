@@ -1,11 +1,13 @@
 package com.dh.clinicaodontologica.modelo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
 @Table(name = "pacientes")
@@ -32,4 +34,8 @@ public class Paciente {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "domicilio_id", nullable = false)
     private Domicilio domicilio;
+
+    @OneToMany(mappedBy = "paciente")
+    @JsonIgnore
+    private Set<Turno> turnos;
 }

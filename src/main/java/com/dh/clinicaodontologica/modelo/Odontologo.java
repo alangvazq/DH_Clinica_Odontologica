@@ -1,8 +1,10 @@
 package com.dh.clinicaodontologica.modelo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "odontologos")
@@ -13,6 +15,10 @@ public class Odontologo {
     private String nombre;
     private String apellido;
     private String matricula;
+
+    @OneToMany(mappedBy = "odontologo")
+    @JsonIgnore
+    private Set<Turno> turnos;
 
     public Odontologo(Long id, String nombre, String apellido, String matricula) {
         this.id = id;
@@ -60,6 +66,14 @@ public class Odontologo {
 
     public void setMatricula(String matricula) {
         this.matricula = matricula;
+    }
+
+    public Set<Turno> getTurnos() {
+        return turnos;
+    }
+
+    public void setTurnos(Set<Turno> turnos) {
+        this.turnos = turnos;
     }
 
     @Override

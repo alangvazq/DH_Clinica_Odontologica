@@ -2,8 +2,11 @@ package com.dh.clinicaodontologica.servicio.impl;
 
 import com.dh.clinicaodontologica.excepcion.ApiExcepcion;
 import com.dh.clinicaodontologica.mapper.ITurnoMapper;
+import com.dh.clinicaodontologica.modelo.Odontologo;
+import com.dh.clinicaodontologica.modelo.Paciente;
 import com.dh.clinicaodontologica.modelo.Turno;
 import com.dh.clinicaodontologica.modelo.dto.TurnoDto;
+import com.dh.clinicaodontologica.repositorio.IOdontologoRepositorio;
 import com.dh.clinicaodontologica.repositorio.IPacienteRepositorio;
 import com.dh.clinicaodontologica.repositorio.ITurnoRepositorio;
 import com.dh.clinicaodontologica.servicio.ITurnoServicio;
@@ -20,6 +23,8 @@ public class TurnoServicioImpl implements ITurnoServicio {
     private static final Logger LOGGER = Logger.getLogger(TurnoServicioImpl.class);
     private final ITurnoRepositorio turnoRepositorio;
     private final ITurnoMapper turnoMapper;
+    private final IPacienteRepositorio pacienteRepositorio;
+    private final IOdontologoRepositorio odontologoRepositorio;
 
     @Override
     public List<TurnoDto> listar() {
@@ -39,9 +44,18 @@ public class TurnoServicioImpl implements ITurnoServicio {
     @Override
     public TurnoDto agregar(TurnoDto datosTurno) {
         LOGGER.debug("Agregando turno - Servicio");
-        // TODO Validar que el paciente y el odontologo existan
-        Turno turno = turnoRepositorio.save(turnoMapper.dtoATurno(datosTurno));
-        return turnoMapper.turnoADto(turno);
+        Odontologo odontologo = odontologoRepositorio.findById(datosTurno.getOdontologo().getId()).orElse(null);
+        Paciente paciente = pacienteRepositorio.findById(datosTurno.getPaciente().getId()).orElse(null);
+
+        if (odontologo != null && paciente != null) {
+            Turno turno = turnoMapper.dtoATurno(datosTurno);
+            turno.setOdontologo(odontologo);
+            turno.setPaciente(paciente);
+            Turno turnoGuardado = turnoRepositorio.save(turno);
+            return turnoMapper.turnoADto(turnoGuardado);
+        } else {
+            throw ApiExcepcion.recursoNoEncontrado("Odontólogo o paciente no encontrado");
+        }
     }
 
     @Override
