@@ -49,5 +49,5 @@ window.addEventListener("load", function () {
             <td>${deleteButton}</td>`;
         }
       });
-  })
+  })();
 });
