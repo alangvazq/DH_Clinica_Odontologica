@@ -1,6 +1,6 @@
 package com.dh.clinicaodontologica.servicio.impl;
 
-import com.dh.clinicaodontologica.excepcion.ResourceNotFoundException;
+import com.dh.clinicaodontologica.excepcion.ApiExcepcion;
 import com.dh.clinicaodontologica.modelo.Odontologo;
 import com.dh.clinicaodontologica.repositorio.IOdontologoRepositorio;
 import com.dh.clinicaodontologica.servicio.IOdontologoServicio;
@@ -27,7 +27,7 @@ public class OdontologoServicioImpl implements IOdontologoServicio {
     @Override
     public Odontologo buscar(Long id) {
         LOGGER.info("Buscar odontólogo con ID: " + id);
-        Odontologo odontologo = iOdontologoRepositorio.findById(id).orElseThrow(() -> new ResourceNotFoundException("No se encontró el odontólogo con id " + id));
+        Odontologo odontologo = iOdontologoRepositorio.findById(id).orElseThrow(() -> ApiExcepcion.recursoNoEncontrado("No se encontró el odontólogo con id " + id));
         LOGGER.info("Odontólogo encontrado: " + odontologo);
         return odontologo;
     }
