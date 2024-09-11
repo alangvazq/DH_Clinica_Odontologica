@@ -89,6 +89,9 @@ public class TurnoServicioImpl implements ITurnoServicio {
     @Override
     public void eliminar(Long turnoId) {
         LOGGER.debug("Eliminando turno por id - Servicio");
+        if (!turnoRepositorio.existsById(turnoId)){
+            throw ApiExcepcion.recursoNoEncontrado(String.format("El turno de id: %d no existe", turnoId));
+        }
         turnoRepositorio.deleteById(turnoId);
     }
 }
