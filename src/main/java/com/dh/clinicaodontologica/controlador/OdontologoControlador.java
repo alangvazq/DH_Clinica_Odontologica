@@ -2,7 +2,11 @@ package com.dh.clinicaodontologica.controlador;
 
 
 import com.dh.clinicaodontologica.modelo.Odontologo;
+import com.dh.clinicaodontologica.modelo.dto.OdontologoDto;
 import com.dh.clinicaodontologica.servicio.IOdontologoServicio;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,44 +16,39 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/odontologos")
+@RequiredArgsConstructor
 public class OdontologoControlador {
-    @Autowired
-    private IOdontologoServicio odontologoServicio;
+    private final IOdontologoServicio odontologoServicio;
+    private static final Logger LOGGER = Logger.getLogger(PacienteControlador.class);
 
     @GetMapping
-    public ResponseEntity<List<Odontologo>> listar(){
+    public ResponseEntity<List<OdontologoDto>> listar(){
+        LOGGER.debug("Listando odontólogos - Controlador");
         return ResponseEntity.ok(odontologoServicio.listar());
     }
 
     @GetMapping("/{odontologoId}")
-    public ResponseEntity<Odontologo> buscarPorId(@PathVariable Long odontologoId){
-        if (odontologoId == null) return ResponseEntity.badRequest().build();
-
-        Odontologo odontologo = odontologoServicio.buscar(odontologoId);
-
-        if (odontologo == null) return ResponseEntity.notFound().build();
-
-        return ResponseEntity.ok(odontologo);
+    public ResponseEntity<OdontologoDto> buscarPorId(@PathVariable Long odontologoId){
+        LOGGER.debug("Buscando odontólogo por id - Controlador");
+        return ResponseEntity.ok(odontologoServicio.buscar(odontologoId));
     }
 
     @PostMapping
-    public ResponseEntity<Odontologo> agregar(@RequestBody Odontologo odontologo){
-        Odontologo odontologoAgregado = odontologoServicio.agregar(odontologo);
-        return ResponseEntity.created(URI.create("/api/v1/odontologos/" + odontologoAgregado.getId())).body(odontologoAgregado);
+    public ResponseEntity<OdontologoDto> agregar(@Valid @RequestBody OdontologoDto odontologo){
+        LOGGER.debug("Agregando odontólogo - Controlador");
+        OdontologoDto odontologoRespuesta = odontologoServicio.agregar(odontologo);
+        return ResponseEntity.created(URI.create("/api/v1/odontologos/" + odontologoRespuesta.getId())).body(odontologoRespuesta);
     }
 
     @PutMapping("/{odontologoId}")
-    public ResponseEntity<Odontologo> modificar(@PathVariable Long odontologoId, @RequestBody Odontologo odontologo){
-        if (odontologoId == null) return ResponseEntity.badRequest().build();
-
-        odontologo.setId(odontologoId);
-        return ResponseEntity.ok(odontologoServicio.modificar(odontologo));
+    public ResponseEntity<OdontologoDto> modificar(@PathVariable Long odontologoId, @Valid @RequestBody OdontologoDto odontologo){
+        LOGGER.debug("Modificando odontólogo - Controlador");
+        return ResponseEntity.ok(odontologoServicio.modificar(odontologoId ,odontologo));
     }
 
     @DeleteMapping("/{odontologoId}")
     public ResponseEntity<Void> eliminar(@PathVariable Long odontologoId){
-        if (odontologoId == null) return ResponseEntity.badRequest().build();
-
+        LOGGER.debug("Eliminando odontólogo - Controlador");
         odontologoServicio.eliminar(odontologoId);
         return ResponseEntity.noContent().build();
     }

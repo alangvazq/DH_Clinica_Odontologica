@@ -1,9 +1,12 @@
 package com.dh.clinicaodontologica.servicio.impl;
 
 import com.dh.clinicaodontologica.excepcion.ApiExcepcion;
+import com.dh.clinicaodontologica.mapper.IOdontologoMapper;
 import com.dh.clinicaodontologica.modelo.Odontologo;
+import com.dh.clinicaodontologica.modelo.dto.OdontologoDto;
 import com.dh.clinicaodontologica.repositorio.IOdontologoRepositorio;
 import com.dh.clinicaodontologica.servicio.IOdontologoServicio;
+import lombok.RequiredArgsConstructor;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,47 +14,54 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class OdontologoServicioImpl implements IOdontologoServicio {
     private static final Logger LOGGER = Logger.getLogger(OdontologoServicioImpl.class);
-    @Autowired
-    private IOdontologoRepositorio iOdontologoRepositorio;
+    private final IOdontologoRepositorio iOdontologoRepositorio;
+    private final IOdontologoMapper iOdontologoMapper;
 
     @Override
-    public List<Odontologo> listar() {
+    public List<OdontologoDto> listar() {
         LOGGER.info("Listar todos los odontólogos");
-        List<Odontologo> odontologos = iOdontologoRepositorio.findAll();
-        LOGGER.info("Cantidad de odontólogos encontrados: " + odontologos.size());
-        return odontologos;
+        return iOdontologoRepositorio.findAll().stream().map(iOdontologoMapper::odontologoADto).toList();
     }
 
     @Override
-    public Odontologo buscar(Long id) {
-        LOGGER.info("Buscar odontólogo con ID: " + id);
-        Odontologo odontologo = iOdontologoRepositorio.findById(id).orElseThrow(() -> ApiExcepcion.recursoNoEncontrado("No se encontró el odontólogo con id " + id));
+    public OdontologoDto buscar(Long odontologoId) {
+        LOGGER.info("Buscar odontólogo con ID: " + odontologoId);
+        Odontologo odontologo = iOdontologoRepositorio.findById(odontologoId).orElseThrow(() ->
+                ApiExcepcion.recursoNoEncontrado("No se encontró el odontólogo con id " + odontologoId));
         LOGGER.info("Odontólogo encontrado: " + odontologo);
-        return odontologo;
+        return iOdontologoMapper.odontologoADto(odontologo);
     }
 
     @Override
-    public Odontologo agregar(Odontologo odontologo) {
-        LOGGER.info("Agregar nuevo odontólogo: " + odontologo);
-        Odontologo odontologoAgregado = iOdontologoRepositorio.save(odontologo);
+    public OdontologoDto agregar(OdontologoDto datosOdontologo) {
+        LOGGER.info("Agregar nuevo odontólogo: " + datosOdontologo);
+        String matricula = datosOdontologo.getMatricula();
+        iOdontologoRepositorio.findByMatricula(matricula).ifPresent(odontologo -> {
+            throw ApiExcepcion.violacionIntegridad("Ya existe un odontólogo con la matrícula " + matricula);
+        });
+
+        Odontologo odontologoAgregado = iOdontologoRepositorio.save(iOdontologoMapper.dtoAOdontologo(datosOdontologo));
         LOGGER.info("Odontólogo agregado con ID: " + odontologoAgregado.getId());
-        return odontologoAgregado;
+        return iOdontologoMapper.odontologoADto(odontologoAgregado);
     }
 
     @Override
-    public Odontologo modificar(Odontologo odontologo) {
+    public OdontologoDto modificar(Long odontologoId ,OdontologoDto odontologo) {
         LOGGER.info("Modificar odontólogo: " + odontologo);
-        Odontologo odontologoModificado = iOdontologoRepositorio.save(odontologo);
-        LOGGER.info("Odontólogo modificado con ID: " + odontologoModificado.getId());
-        return odontologoModificado;
+        Odontologo odontologoExistente = iOdontologoRepositorio.findById(odontologoId).orElseThrow(() ->
+                ApiExcepcion.recursoNoEncontrado("No se encontró el odontólogo con id " + odontologoId));
+
+        iOdontologoMapper.actualizarOdontologoDesdeDto(odontologoExistente, odontologo);
+        return iOdontologoMapper.odontologoADto(iOdontologoRepositorio.save(odontologoExistente));
     }
 
     @Override
-    public void eliminar(Long id) {
-        LOGGER.info("Eliminar odontólogo con ID: " + id);
-        iOdontologoRepositorio.deleteById(id);
-        LOGGER.info("Odontólogo con ID " + id + " eliminado");
+    public void eliminar(Long odontologoId) {
+        LOGGER.info("Eliminar odontólogo con ID: " + odontologoId);
+        iOdontologoRepositorio.deleteById(odontologoId);
+        LOGGER.info("Odontólogo con ID " + odontologoId + " eliminado");
     }
 }
