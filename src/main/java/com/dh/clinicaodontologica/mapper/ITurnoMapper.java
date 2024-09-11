@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {IOdontologoMapper.class, IPacienteMapper.class})
 public interface ITurnoMapper {
     Turno dtoATurno(TurnoDto dto);
     TurnoDto turnoADto(Turno turno);

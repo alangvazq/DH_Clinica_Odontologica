@@ -55,9 +55,10 @@ public class TurnoServicioImpl implements ITurnoServicio {
             throw ApiExcepcion.recursoNoEncontrado("Paciente no encontrado");
         }
 
-        Turno turno = turnoMapper.dtoATurno(datosTurno);
+        Turno turno = new Turno();
         turno.setOdontologo(odontologo);
         turno.setPaciente(paciente);
+        turno.setFecha(datosTurno.getFecha());
         Turno turnoGuardado = turnoRepositorio.save(turno);
         return turnoMapper.turnoADto(turnoGuardado);
     }

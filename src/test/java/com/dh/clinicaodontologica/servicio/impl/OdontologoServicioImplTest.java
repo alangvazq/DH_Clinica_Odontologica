@@ -64,6 +64,7 @@ class OdontologoServicioImplTest {
         assertTrue(odontologoRepositorio.findById(odontologo.getId()).isPresent());
     }
 
+    //TODO
     @Test
     @Transactional
     void testAgregarOdontologoDuplicado() {

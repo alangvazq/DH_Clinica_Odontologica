@@ -17,9 +17,8 @@ public class TurnoDto {
 
     private LocalDate fecha;
 
-    //TODO Cambiar a OdontologoDto
     @NotNull(message = "El odontologo es obligatorio")
-    private Odontologo odontologo;
+    private OdontologoDto odontologo;
 
     @NotNull(message = "El paciente es obligatorio")
     private PacienteDto paciente;
