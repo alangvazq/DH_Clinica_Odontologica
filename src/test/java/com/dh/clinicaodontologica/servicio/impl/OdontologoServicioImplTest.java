@@ -68,8 +68,9 @@ class OdontologoServicioImplTest {
     @Test
     @Transactional
     void testAgregarOdontologoDuplicado() {
-        OdontologoDto odontologo = odontologoServicio.agregar(crearOdontologoDto());
-        assertThrows(ApiExcepcion.class, () -> odontologoServicio.agregar(odontologo));
+        OdontologoDto odontologo = crearOdontologoDto();
+        odontologoServicio.agregar(odontologo);
+        assertThrows(ApiExcepcion.class, () -> odontologoServicio.agregar(odontologoServicio.agregar(odontologo)));
     }
 
     @Test
