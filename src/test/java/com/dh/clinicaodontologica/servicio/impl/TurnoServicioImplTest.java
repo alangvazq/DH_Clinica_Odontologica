@@ -1,18 +1,25 @@
 package com.dh.clinicaodontologica.servicio.impl;
 
+import com.dh.clinicaodontologica.excepcion.ApiExcepcion;
 import com.dh.clinicaodontologica.modelo.dto.DomicilioDto;
 import com.dh.clinicaodontologica.modelo.dto.OdontologoDto;
 import com.dh.clinicaodontologica.modelo.dto.PacienteDto;
 import com.dh.clinicaodontologica.modelo.dto.TurnoDto;
+import com.dh.clinicaodontologica.repositorio.IOdontologoRepositorio;
+import com.dh.clinicaodontologica.repositorio.IPacienteRepositorio;
+import com.dh.clinicaodontologica.repositorio.ITurnoRepositorio;
 import com.dh.clinicaodontologica.servicio.IOdontologoServicio;
 import com.dh.clinicaodontologica.servicio.IPacienteServicio;
 import com.dh.clinicaodontologica.servicio.ITurnoServicio;
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,6 +28,15 @@ import static org.junit.jupiter.api.Assertions.*;
 class TurnoServicioImplTest {
     @Autowired
     private ITurnoServicio turnoServicio;
+
+    @Autowired
+    private ITurnoRepositorio turnoRepositorio;
+
+    @Autowired
+    private IOdontologoRepositorio odontologoRepositorio;
+
+    @Autowired
+    private IPacienteRepositorio pacienteRepositorio;
 
     @Autowired
     private IOdontologoServicio odontologoServicio;
@@ -52,153 +68,81 @@ class TurnoServicioImplTest {
                 .matricula("123456").build();
     }
 
-    @Test
-    @Transactional
-    public void testListarTurnosExitosos(){
-        PacienteDto pacienteGuardado = pacienteServicio.agregar(crearPacienteDto());
-        OdontologoDto odontologoGuardado = odontologoServicio.agregar(crearOdontologoDto());
-
-        TurnoDto turnoDto = TurnoDto.builder()
-                .fecha(LocalDate.now())
-                .odontologo(odontologoGuardado)
-                .paciente(pacienteGuardado).build();
-
-        turnoServicio.agregar(turnoDto);
-        List<TurnoDto> listadoTurnos = turnoServicio.listar();
-        assertFalse(listadoTurnos.isEmpty());
+    @BeforeEach
+    void setUp() {
+        turnoRepositorio.deleteAll();
+        pacienteRepositorio.deleteAll();
+        odontologoRepositorio.deleteAll();
     }
 
     @Test
-    @Transactional
-    public void testListarTurnosInexistentes(){
-        List<TurnoDto> listadoTurnos = turnoServicio.listar();
-        assertTrue(listadoTurnos.isEmpty());
+    @DisplayName("Debería retornar una lista vacía si no hay turnos registrados")
+    void test_listarTurnos_sinTurnos() {
+        List<TurnoDto> turnos = turnoServicio.listar();
+        assertTrue(turnos.isEmpty());
     }
 
     @Test
-    @Transactional
-    public void testBuscarTurnoExistente(){
-        PacienteDto pacienteGuardado = pacienteServicio.agregar(crearPacienteDto());
-        OdontologoDto odontologoGuardado = odontologoServicio.agregar(crearOdontologoDto());
-
-        TurnoDto turnoDto = TurnoDto.builder()
-                .fecha(LocalDate.now())
-                .odontologo(odontologoGuardado)
-                .paciente(pacienteGuardado).build();
-
-        TurnoDto turnoGuardado = turnoServicio.agregar(turnoDto);
-
-        TurnoDto turnoEncontrado = turnoServicio.buscar(turnoGuardado.getId());
-        assertNotNull(turnoEncontrado);
+    @DisplayName("Debería retornar una lista con 3 turnos dado un odontólogo")
+    void test_listarTurnos_con1Turno() {
+        OdontologoDto odontologo = odontologoServicio.agregar(crearOdontologoDto());
+        turnoServicio.crear(odontologo.getId());
+        List<TurnoDto> turnos = turnoServicio.listar();
+        assertEquals(3, turnos.size());
     }
 
     @Test
-    @Transactional
-    public void testBuscarTurnoInexistente(){
-        assertThrows(Exception.class, () -> turnoServicio.buscar(1L));
+    @DisplayName("Debería lanzar excepción si no hay turnos")
+    void test_buscarUltimoTurno_sinTurnos() {
+        assertThrows(ApiExcepcion.class, () -> turnoServicio.buscarUltimo());
     }
 
     @Test
-    @Transactional
-    public void testAgregarTurnoExitoso(){
-        PacienteDto pacienteGuardado = pacienteServicio.agregar(crearPacienteDto());
-        OdontologoDto odontologoGuardado = odontologoServicio.agregar(crearOdontologoDto());
-
-        TurnoDto turnoDto = TurnoDto.builder()
-                .fecha(LocalDate.now())
-                .odontologo(odontologoGuardado)
-                .paciente(pacienteGuardado).build();
-
-        TurnoDto turnoGuardado = turnoServicio.agregar(turnoDto);
-        assertNotNull(turnoGuardado);
+    @DisplayName("Debería retornar el último turno creado al crear 2 turnos")
+    void test_buscarUltimoTurno_con2Turnos() {
+        OdontologoDto odontologo = odontologoServicio.agregar(crearOdontologoDto());
+        turnoServicio.crear(odontologo.getId());
+        turnoServicio.crear(odontologo.getId());
+        TurnoDto ultimoTurno = turnoServicio.buscarUltimo();
+        assertNotNull(ultimoTurno);
     }
 
     @Test
-    @Transactional
-    public void testAgregarTurnoOdontologoNoEncontrado(){
-        PacienteDto pacienteGuardado = pacienteServicio.agregar(crearPacienteDto());
-
-        TurnoDto turnoDto = TurnoDto.builder()
-                .fecha(LocalDate.now())
-                .paciente(pacienteGuardado).build();
-
-        assertThrows(Exception.class, () -> turnoServicio.agregar(turnoDto));
+    @DisplayName("Debería lanzar excepción si el odontólogo no existe")
+    void test_crearTurno_odontologoNoExiste() {
+        assertThrows(ApiExcepcion.class, () -> turnoServicio.crear(-1L));
     }
 
     @Test
-    @Transactional
-    public void testAgregarTurnoPacienteNoEncontrado(){
-        OdontologoDto odontologoGuardado = odontologoServicio.agregar(crearOdontologoDto());
-
-        TurnoDto turnoDto = TurnoDto.builder()
-                .fecha(LocalDate.now())
-                .odontologo(odontologoGuardado).build();
-
-        assertThrows(Exception.class, () -> turnoServicio.agregar(turnoDto));
+    @DisplayName("Debería crear turnos con fechas posteriores o iguales a la fecha actual")
+    void test_crearTurno_fechasValidas() {
+        OdontologoDto odontologo = odontologoServicio.agregar(crearOdontologoDto());
+        List<TurnoDto> turnos = turnoServicio.crear(odontologo.getId());
+        LocalDateTime now = LocalDateTime.now();
+        assertTrue(turnos.stream().allMatch(turno -> !turno.getFechaHora().isBefore(now)));
     }
 
     @Test
-    @Transactional
-    public void testAgregarTurnoOdontologoYpacienteNoEncontrados(){
-        TurnoDto turnoDto = TurnoDto.builder()
-                .fecha(LocalDate.now()).build();
-
-        assertThrows(Exception.class, () -> turnoServicio.agregar(turnoDto));
+    @DisplayName("Debería lanzar excepción si el paciente no existe al asignar turno")
+    void test_asignarTurno_pacienteNoExiste() {
+        OdontologoDto odontologo = odontologoServicio.agregar(crearOdontologoDto());
+        TurnoDto turno = turnoServicio.crear(odontologo.getId()).get(0);
+        assertThrows(ApiExcepcion.class, () -> turnoServicio.asignar(turno.getId(), -1L));
     }
 
     @Test
-    @Transactional
-    public void testModificarTurnoExitoso(){
-        PacienteDto pacienteGuardado = pacienteServicio.agregar(crearPacienteDto());
-        OdontologoDto odontologoGuardado = odontologoServicio.agregar(crearOdontologoDto());
-
-        TurnoDto turnoDto = TurnoDto.builder()
-                .fecha(LocalDate.now())
-                .odontologo(odontologoGuardado)
-                .paciente(pacienteGuardado).build();
-
-        TurnoDto turnoGuardado = turnoServicio.agregar(turnoDto);
-
-        TurnoDto turnoModificado = TurnoDto.builder()
-                .fecha(LocalDate.now().plusDays(1))
-                .odontologo(odontologoGuardado)
-                .paciente(pacienteGuardado).build();
-
-        TurnoDto turnoActualizado = turnoServicio.modificar(turnoGuardado.getId(), turnoModificado);
-        assertEquals(turnoModificado.getFecha(), turnoActualizado.getFecha());
+    @DisplayName("Debería asignar un turno correctamente con datos válidos")
+    void test_asignarTurno_datosValidos() {
+        OdontologoDto odontologo = odontologoServicio.agregar(crearOdontologoDto());
+        PacienteDto paciente = pacienteServicio.agregar(crearPacienteDto());
+        TurnoDto turno = turnoServicio.crear(odontologo.getId()).get(0);
+        TurnoDto turnoAsignado = turnoServicio.asignar(turno.getId(), paciente.getId());
+        assertNotNull(turnoAsignado.getPaciente());
     }
 
     @Test
-    @Transactional
-    public void testModificarTurnoNoEncontrado(){
-        PacienteDto pacienteGuardado = pacienteServicio.agregar(crearPacienteDto());
-        OdontologoDto odontologoGuardado = odontologoServicio.agregar(crearOdontologoDto());
-        TurnoDto turnoModificado = TurnoDto.builder()
-                .fecha(LocalDate.now().plusDays(1))
-                .odontologo(odontologoGuardado)
-                .paciente(pacienteGuardado).build();
-        assertThrows(Exception.class, () -> turnoServicio.modificar(1L, turnoModificado));
-    }
-
-    @Test
-    @Transactional
-    public void testEliminarTurnoExitoso(){
-        PacienteDto pacienteGuardado = pacienteServicio.agregar(crearPacienteDto());
-        OdontologoDto odontologoGuardado = odontologoServicio.agregar(crearOdontologoDto());
-
-        TurnoDto turnoDto = TurnoDto.builder()
-                .fecha(LocalDate.now())
-                .odontologo(odontologoGuardado)
-                .paciente(pacienteGuardado).build();
-
-        TurnoDto turnoGuardado = turnoServicio.agregar(turnoDto);
-        turnoServicio.eliminar(turnoGuardado.getId());
-        assertThrows(Exception.class, () -> turnoServicio.buscar(turnoGuardado.getId()));
-    }
-
-    @Test
-    @Transactional
-    public void testEliminarTurnoNoEncontrado(){
-        assertThrows(Exception.class, () -> turnoServicio.eliminar(1L));
+    @DisplayName("Debería lanzar excepción si el turno no existe al asignar turno")
+    void test_asignarTurno_turnoNoExiste() {
+        assertThrows(ApiExcepcion.class, () -> turnoServicio.asignar(-1L, -1L));
     }
 }
