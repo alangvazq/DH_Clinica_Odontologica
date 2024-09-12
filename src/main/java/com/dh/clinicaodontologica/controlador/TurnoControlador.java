@@ -1,16 +1,12 @@
 package com.dh.clinicaodontologica.controlador;
 
-import com.dh.clinicaodontologica.modelo.Turno;
 import com.dh.clinicaodontologica.modelo.dto.TurnoDto;
 import com.dh.clinicaodontologica.servicio.ITurnoServicio;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -26,29 +22,21 @@ public class TurnoControlador {
         return ResponseEntity.ok(turnoServicio.listar());
     }
 
-    @GetMapping("/{turnoId}")
-    public ResponseEntity<TurnoDto> buscarPorId(@PathVariable Long turnoId) {
-        log.debug("Buscando turno por id - Controlador");
-        return ResponseEntity.ok(turnoServicio.buscar(turnoId));
+    @GetMapping("/ultimo")
+    public ResponseEntity<TurnoDto> buscarUtimoTurno() {
+        log.debug("Buscando último turno - Controlador");
+        return ResponseEntity.ok(turnoServicio.buscarUltimo());
     }
 
     @PostMapping
-    public ResponseEntity<TurnoDto> agregar(@Valid @RequestBody TurnoDto turnoPeticion) {
+    public ResponseEntity<List<TurnoDto>> crear(@RequestParam(name = "odontologo") Long odontologoId) {
         log.debug("Agregando turno - Controlador");
-        TurnoDto turnoRespuesta = turnoServicio.agregar(turnoPeticion);
-        return ResponseEntity.created(URI.create("/api/v1/turnos/" + turnoRespuesta.getId())).body(turnoRespuesta);
+        return ResponseEntity.ok(turnoServicio.crear(odontologoId));
     }
 
     @PutMapping("/{turnoId}")
-    public ResponseEntity<TurnoDto> modificar(@PathVariable Long turnoId, @Valid @RequestBody TurnoDto datosTurno) {
-        log.debug("Modificando turno - Controlador");
-        return ResponseEntity.ok(turnoServicio.modificar(turnoId, datosTurno));
-    }
-
-    @DeleteMapping("/{turnoId}")
-    public ResponseEntity<Void> eliminar(@PathVariable Long turnoId) {
-        log.debug("Eliminando turno - Controlador");
-        turnoServicio.eliminar(turnoId);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<TurnoDto> asignarTurno(@PathVariable Long turnoId, @RequestParam(name = "paciente") Long pacienteId) {
+        log.debug("Asignando turno - Controlador");
+        return ResponseEntity.ok(turnoServicio.asignar(turnoId, pacienteId));
     }
 }

@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "turnos")
@@ -22,9 +22,9 @@ public class Turno {
     private Odontologo odontologo;
 
     @ManyToOne
-    @JoinColumn(name = "paciente_id", nullable = false)
+    @JoinColumn(name = "paciente_id")
     private Paciente paciente;
 
-    @Column(name = "fecha_turno")
-    private LocalDate fecha;
+    @Column(name = "fecha_hora", nullable = false)
+    private LocalDateTime fechaHora;
 }

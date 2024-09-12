@@ -26,8 +26,14 @@ public class PacienteControlador {
 
     @GetMapping("/{pacienteId}")
     public ResponseEntity<PacienteDto> buscarPorId(@PathVariable Long pacienteId) {
-        log.debug("Buscando paciente por id - Controlador");
-        return ResponseEntity.ok(pacienteServicio.buscar(pacienteId));
+        log.debug("Buscando paciente por ID - Controlador");
+        return ResponseEntity.ok(pacienteServicio.buscarPorId(pacienteId));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<PacienteDto> buscarPorDni(@RequestParam(name = "dni", required = true) String pacienteDni) {
+        log.debug("Buscando paciente por ID - Controlador");
+        return ResponseEntity.ok(pacienteServicio.buscarPorDni(pacienteDni));
     }
 
     @PostMapping

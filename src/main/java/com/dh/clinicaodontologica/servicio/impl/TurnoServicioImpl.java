@@ -12,9 +12,11 @@ import com.dh.clinicaodontologica.repositorio.ITurnoRepositorio;
 import com.dh.clinicaodontologica.servicio.ITurnoServicio;
 import lombok.RequiredArgsConstructor;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,70 +31,78 @@ public class TurnoServicioImpl implements ITurnoServicio {
     @Override
     public List<TurnoDto> listar() {
         LOGGER.debug("Listando turnos - Servicio");
-        return turnoRepositorio.findAll().stream().map(turnoMapper::turnoADto).toList();
+        return turnoRepositorio.findTurnosSinAsignar().stream().map(turnoMapper::turnoADto).toList();
     }
 
     @Override
-    public TurnoDto buscar(Long turnoId) {
-        LOGGER.debug("Buscando turno por id - Servicio");
-        Turno turno = turnoRepositorio.findById(turnoId).orElseThrow(() ->
-                ApiExcepcion.recursoNoEncontrado(String.format("El turno de id: %d no existe", turnoId))
+    public TurnoDto buscarUltimo() {
+        LOGGER.debug("Listando turnos - Servicio");
+        Turno ultimoTurno = turnoRepositorio.findUltimoTurno().orElseThrow(() -> ApiExcepcion.recursoNoEncontrado("Aún hay turnos disponibles"));
+        return turnoMapper.turnoADto(ultimoTurno);
+    }
+
+    @Override
+    public List<TurnoDto> crear(Long odontologoId) {
+        LOGGER.debug("Creando turno - Servicio");
+        Odontologo odontologo = odontologoRepositorio.findById(odontologoId).orElseThrow(() ->
+            ApiExcepcion.recursoNoEncontrado(String.format("El odontólogo de ID: %d no existe", odontologoId))
         );
-        return turnoMapper.turnoADto(turno);
+
+        LocalDateTime fechaHoraActual = LocalDateTime.now();
+        LocalDateTime fechaHoraUltimoTurno = turnoRepositorio
+                                                .findUltimoTurno()
+                                                .map(Turno::getFechaHora)
+                                                .orElse(LocalDateTime.now());
+
+        fechaHoraUltimoTurno = fechaHoraUltimoTurno.isBefore(fechaHoraActual) ? fechaHoraActual : fechaHoraUltimoTurno;
+
+        List<LocalDateTime> fechasHorasProximosTurnos = getFechasHorasProximosTurnos(fechaHoraUltimoTurno);
+        List<Turno> turnos = fechasHorasProximosTurnos.stream().map(fechaHora -> {
+            Turno turno = new Turno();
+            turno.setOdontologo(odontologo);
+            turno.setFechaHora(fechaHora);
+            return turno;
+        }).toList();
+
+        return turnoRepositorio.saveAll(turnos).stream().map(turnoMapper::turnoADto).toList();
     }
 
     @Override
-    public TurnoDto agregar(TurnoDto datosTurno) {
-        LOGGER.debug("Agregando turno - Servicio");
-        Odontologo odontologo = odontologoRepositorio.findById(datosTurno.getOdontologo().getId()).orElse(null);
-        Paciente paciente = pacienteRepositorio.findById(datosTurno.getPaciente().getId()).orElse(null);
-
-        if (odontologo == null){
-            throw ApiExcepcion.recursoNoEncontrado("Odontólogo no encontrado");
-        }
-
-        if (paciente == null){
-            throw ApiExcepcion.recursoNoEncontrado("Paciente no encontrado");
-        }
-
-        Turno turno = new Turno();
-        turno.setOdontologo(odontologo);
-        turno.setPaciente(paciente);
-        turno.setFecha(datosTurno.getFecha());
-        Turno turnoGuardado = turnoRepositorio.save(turno);
-        return turnoMapper.turnoADto(turnoGuardado);
-    }
-
-    @Override
-    public TurnoDto modificar(Long turnoId, TurnoDto datosTurno) {
-        LOGGER.debug("Modificando turno por id - Servicio");
+    public TurnoDto asignar(Long turnoId, Long pacienteId) {
+        LOGGER.debug("Asignando turno - Servicio");
         Turno turno = turnoRepositorio.findById(turnoId).orElseThrow(() ->
-                ApiExcepcion.recursoNoEncontrado(String.format("El turno de id: %d no existe", turnoId))
+            ApiExcepcion.recursoNoEncontrado(String.format("El turno de ID: %d no existe", turnoId))
         );
-        Odontologo odontologo = odontologoRepositorio.findById(datosTurno.getOdontologo().getId()).orElse(null);
-        Paciente paciente = pacienteRepositorio.findById(datosTurno.getPaciente().getId()).orElse(null);
 
-        if (odontologo == null){
-            throw ApiExcepcion.recursoNoEncontrado("Odontólogo no encontrado");
+        if(turno.getPaciente() != null) {
+            throw ApiExcepcion.conflictoPorViolacionDeEstado(String.format("El turno de ID: %d ya está ocupado", turnoId));
         }
 
-        if (paciente == null){
-            throw ApiExcepcion.recursoNoEncontrado("Paciente no encontrado");
-        }
+        Paciente paciente = pacienteRepositorio.findById(pacienteId).orElseThrow(() ->
+            ApiExcepcion.recursoNoEncontrado(String.format("El paciente de ID: %d no existe", pacienteId))
+        );
 
-        turno.setOdontologo(odontologo);
         turno.setPaciente(paciente);
-        turno.setFecha(datosTurno.getFecha());
-        Turno turnoGuardado = turnoRepositorio.save(turno);
-        return turnoMapper.turnoADto(turnoGuardado);
+        return turnoMapper.turnoADto(turnoRepositorio.save(turno));
     }
 
-    @Override
-    public void eliminar(Long turnoId) {
-        LOGGER.debug("Eliminando turno por id - Servicio");
-        if (!turnoRepositorio.existsById(turnoId)){
-            throw ApiExcepcion.recursoNoEncontrado(String.format("El turno de id: %d no existe", turnoId));
+    private List<LocalDateTime> getFechasHorasProximosTurnos(LocalDateTime fechaHoraUltimoTurno) {
+        List<LocalDateTime> fechasHoras = new ArrayList<>();
+        LocalDateTime ultimaFechaHora = fechaHoraUltimoTurno;
+        for (int i = 0; i < 3; i++) {
+            LocalDateTime fechaHoraTurno = ultimaFechaHora.plusHours(1);
+
+            if (fechaHoraTurno.getDayOfWeek() == DayOfWeek.SUNDAY) {
+                fechaHoraTurno = fechaHoraTurno.plusDays(1).withHour(6);
+            }
+
+            if (fechaHoraTurno.getHour() > 11) {
+                fechaHoraTurno = fechaHoraTurno.plusDays(1).withHour(6);
+            }
+
+            fechasHoras.add(fechaHoraTurno);
+            ultimaFechaHora = fechaHoraTurno;
         }
-        turnoRepositorio.deleteById(turnoId);
+        return fechasHoras;
     }
 }

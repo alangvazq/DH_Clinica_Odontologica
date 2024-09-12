@@ -35,7 +35,7 @@ public class Paciente {
     @JoinColumn(name = "domicilio_id", nullable = false)
     private Domicilio domicilio;
 
-    @OneToMany(mappedBy = "paciente")
+    @OneToMany(mappedBy = "paciente", cascade = CascadeType.DETACH)
     @JsonIgnore
     private Set<Turno> turnos;
 }

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <title>Turnos</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/turnos/js/get_turno.js" defer></script>
+    <script
+      type="text/javascript"
+      src="/turnos/js/post_turno.js"
+      defer
+    ></script>
+  </head>
+  <body>
+    <div class="container">
+      <ul class="nav nav-pills">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Inicio</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="/pacientes/guardar.html"
+            >Asignar turno</a
+          >
+        </li>
+      </ul>
+      <div class="row">
+        <div
+          class="col"
+          style="background-color: #e6fffa; padding: 10px; border-radius: 3px"
+        >
+          <h1>Asignar turno</h1>
+          <form id="buscarPacienteForm">
+            <div class="form-group">
+              <label>Buscar paciente por DNI:</label>
+              <input
+                type="search"
+                class="form-control"
+                name="pacienteDni"
+                id="pacienteDni"
+                required
+              />
+            </div>
+            <button type="submit" class="btn btn-primary">Buscar</button>
+            <div id="respuestaBuscarPaciente" class="d-none"></div>
+          </form>
+          <div id="datosPaciente" class="d-none"></div>
+          <form id="asignarTurnoForm" class="d-none">
+            <div class="form-group">
+              <label>Escoja un turno:</label>
+              <select name="turnoId" id="turnoId" class="form-control" required>
+                <option value="" disabled>
+                  --Por favor, escoja un turno--
+                </option>
+                <option value="1">11-09-2024 06:00AM - Sara Rita</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Asignar turno</button>
+          </form>
+          <div id="respuestaAsignarTurno" class="d-none"></div>
+        </div>
+      </div>
+    </div>
+    <template id="datosPacienteTemplate">
+      <h2>Paciente:</h2>
+      <div>Nombre completo: <span data-nombre></span></div>
+      <div>DNI: <span data-dni></span></div>
+      <div>Fecha Alta: <span data-fechaAlta></span></div>
+      <div>Domicilio: <span data-domicilio></span></div>
+    </template>
+  </body>
+</html>

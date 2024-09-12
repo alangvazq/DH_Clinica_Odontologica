@@ -16,7 +16,7 @@ public class ApiExcepcion extends RuntimeException {
         return new ApiExcepcion(message, HttpStatus.NOT_FOUND);
     }
 
-    public static ApiExcepcion violacionIntegridad(String message) {
-        return new ApiExcepcion(message, HttpStatus.BAD_REQUEST);
+    public static ApiExcepcion conflictoPorViolacionDeEstado(String message) {
+        return new ApiExcepcion(message, HttpStatus.CONFLICT);
     }
 }

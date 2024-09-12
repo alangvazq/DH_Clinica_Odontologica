@@ -1,11 +1,7 @@
 window.addEventListener("load", function () {
   (function () {
     const url = "/api/v1/pacientes";
-    const settings = {
-      method: "GET",
-    };
-
-    fetch(url, settings)
+    fetch(url)
       .then((response) => {
         if (!response.ok) {
           return response.json().then(({ mensaje }) => {

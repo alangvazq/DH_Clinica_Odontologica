@@ -6,7 +6,8 @@ import java.util.List;
 
 public interface IPacienteServicio {
     List<PacienteDto> listar();
-    PacienteDto buscar(Long pacienteId);
+    PacienteDto buscarPorId(Long pacienteId);
+    PacienteDto buscarPorDni(String pacienteDni);
     PacienteDto agregar(PacienteDto datosPaciente);
     PacienteDto modificar(Long pacienteId, PacienteDto datosPaciente);
     void eliminar(Long pacienteId);
