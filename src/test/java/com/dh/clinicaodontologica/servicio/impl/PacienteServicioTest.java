@@ -30,7 +30,7 @@ class PacienteServicioTest {
 
     @BeforeEach
     void setUp() {
-        pacienteRepositorio.deleteAllInBatch();
+        pacienteRepositorio.deleteAll();
     }
 
     @Test

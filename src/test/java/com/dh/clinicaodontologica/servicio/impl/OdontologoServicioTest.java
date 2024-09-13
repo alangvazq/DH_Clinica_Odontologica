@@ -16,7 +16,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class OdontologoServicioImplTest {
+class OdontologoServicioTest {
     @Autowired
     private IOdontologoRepositorio odontologoRepositorio;
 
@@ -37,7 +37,7 @@ class OdontologoServicioImplTest {
 
     @Test
     @DisplayName("Listar odontologos existentes")
-    void testListarOdontologosExistentes() {
+    void test_listarOdontologos_odontologoExistentes() {
         OdontologoDto odontologo = odontologoServicio.agregar(crearOdontologoDto());
         List<OdontologoDto> listadoOdontologos = odontologoServicio.listar();
         assertEquals(1, listadoOdontologos.size());
@@ -45,7 +45,7 @@ class OdontologoServicioImplTest {
 
     @Test
     @DisplayName("Listar odontologos inexistentes")
-    void testListarOdontologoInexistente() {
+    void test_listarOdontologo_odontologosInexistente() {
         List<OdontologoDto> listadoOdontologos = odontologoServicio.listar();
         assertTrue(listadoOdontologos.isEmpty());
     }
@@ -53,7 +53,7 @@ class OdontologoServicioImplTest {
     @Test
     @Transactional
     @DisplayName("Buscar odontologo existente")
-    void testBuscarOdontologoExistente() {
+    void test_buscarOdontologo_odontologoExistente() {
         OdontologoDto odontologo = odontologoServicio.agregar(crearOdontologoDto());
         OdontologoDto odontologoEncontrado = odontologoServicio.buscar(odontologo.getId());
         assertNotNull(odontologoEncontrado);
@@ -61,13 +61,13 @@ class OdontologoServicioImplTest {
 
     @Test
     @DisplayName("Buscar odontologo inexistente")
-    void testBuscarOdontologoInexistente() {
+    void test_buscarOdontologo_odontologoInexistente() {
         assertThrows(ApiExcepcion.class, () -> odontologoServicio.buscar(-1L));
     }
 
     @Test
     @DisplayName("Agregar odontologo exitoso")
-    void testAgregarOdontologoExitoso() {
+    void test_agregarOdontologo_odontologoExitoso() {
         OdontologoDto odontologo = odontologoServicio.agregar(crearOdontologoDto());
         assertTrue(odontologoRepositorio.findById(odontologo.getId()).isPresent());
     }
@@ -75,7 +75,7 @@ class OdontologoServicioImplTest {
     @Test
     @Transactional
     @DisplayName("Agregar odontologo duplicado")
-    void testAgregarOdontologoDuplicado() {
+    void test_agregarOdontologo_odontologoDuplicado() {
         OdontologoDto odontologo = crearOdontologoDto();
         odontologoServicio.agregar(odontologo);
         assertThrows(ApiExcepcion.class, () -> odontologoServicio.agregar(odontologoServicio.agregar(odontologo)));
@@ -83,7 +83,7 @@ class OdontologoServicioImplTest {
 
     @Test
     @DisplayName("Modificar odontologo existente")
-    void testModificarOdontologoExistente() {
+    void test_modificarOdontologo_odontologoExistente() {
         OdontologoDto odontologo = odontologoServicio.agregar(crearOdontologoDto());
         odontologo.setNombre("Morty");
         odontologoServicio.modificar(odontologo.getId(), odontologo);
@@ -92,13 +92,12 @@ class OdontologoServicioImplTest {
 
     @Test
     @DisplayName("Modificar odontologo inexistente")
-    void testModificarOdontologoInexistente() {
-        assertThrows(ApiExcepcion.class, () -> odontologoServicio.modificar(-1L, crearOdontologoDto()));
+    void test_modificarOdontologo_odontologoInexistente() {        assertThrows(ApiExcepcion.class, () -> odontologoServicio.modificar(-1L, crearOdontologoDto()));
     }
 
     @Test
     @DisplayName("Eliminar odontologo existente")
-    void testEliminarOdontologoExistente() {
+    void test_eliminarOdontologo_odontologoExistente() {
         OdontologoDto odontologo = odontologoServicio.agregar(crearOdontologoDto());
         odontologoServicio.eliminar(odontologo.getId());
         assertThrows(ApiExcepcion.class, () -> odontologoServicio.buscar(odontologo.getId()));
@@ -106,7 +105,7 @@ class OdontologoServicioImplTest {
 
     @Test
     @DisplayName("Eliminar odontologo inexistente")
-    void testEliminarOdontologoInexistente() {
+    void test_eliminarOdontologo_odontologoInexistente() {
         assertDoesNotThrow(() -> odontologoServicio.eliminar(-1L));
     }
 }

@@ -11,7 +11,6 @@ import com.dh.clinicaodontologica.repositorio.ITurnoRepositorio;
 import com.dh.clinicaodontologica.servicio.IOdontologoServicio;
 import com.dh.clinicaodontologica.servicio.IPacienteServicio;
 import com.dh.clinicaodontologica.servicio.ITurnoServicio;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +24,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class TurnoServicioImplTest {
+class TurnoServicioTest {
     @Autowired
     private ITurnoServicio turnoServicio;
 
