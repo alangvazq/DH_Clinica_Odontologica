@@ -92,11 +92,11 @@ public class TurnoServicioImpl implements ITurnoServicio {
         for (int i = 0; i < 3; i++) {
             LocalDateTime fechaHoraTurno = ultimaFechaHora.plusHours(1);
 
-            if (fechaHoraTurno.getDayOfWeek() == DayOfWeek.SUNDAY) {
+            if (fechaHoraTurno.getHour() > 11) {
                 fechaHoraTurno = fechaHoraTurno.plusDays(1).withHour(6);
             }
 
-            if (fechaHoraTurno.getHour() > 11) {
+            if (fechaHoraTurno.getDayOfWeek() == DayOfWeek.SUNDAY) {
                 fechaHoraTurno = fechaHoraTurno.plusDays(1).withHour(6);
             }
 
