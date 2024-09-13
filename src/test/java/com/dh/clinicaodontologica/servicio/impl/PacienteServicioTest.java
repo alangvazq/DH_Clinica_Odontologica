@@ -51,14 +51,14 @@ class PacienteServicioTest {
     @Test
     @DisplayName("Debería fallar al intentar encontrar un paciente, si el id es inválido")
     void test_buscarPaciente_pacienteInexistente() {
-        assertThrows(ApiExcepcion.class, () -> pacienteServicio.buscar(ID_INVALIDO));
+        assertThrows(ApiExcepcion.class, () -> pacienteServicio.buscarPorId(ID_INVALIDO));
     }
 
     @Test
     @DisplayName("Debería retornar un paciente no nulo, si el id es válido")
     void test_buscarPaciente_datosValidos() {
         Paciente paciente = pacienteRepositorio.save(getPacienteValido());
-        assertNotNull(pacienteServicio.buscar(paciente.getId()));
+        assertNotNull(pacienteServicio.buscarPorId(paciente.getId()));
     }
 
     @Test

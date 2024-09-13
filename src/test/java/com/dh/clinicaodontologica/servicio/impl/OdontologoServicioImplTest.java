@@ -5,6 +5,8 @@ import com.dh.clinicaodontologica.modelo.dto.OdontologoDto;
 import com.dh.clinicaodontologica.repositorio.IOdontologoRepositorio;
 import com.dh.clinicaodontologica.servicio.IOdontologoServicio;
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +23,11 @@ class OdontologoServicioImplTest {
     @Autowired
     private IOdontologoServicio odontologoServicio;
 
+    @BeforeEach
+    void setUp() {
+        odontologoRepositorio.deleteAll();
+    }
+
     private OdontologoDto crearOdontologoDto(){
         return OdontologoDto.builder()
                 .nombre("Rick")
@@ -29,7 +36,7 @@ class OdontologoServicioImplTest {
     }
 
     @Test
-    @Transactional
+    @DisplayName("Listar odontologos existentes")
     void testListarOdontologosExistentes() {
         OdontologoDto odontologo = odontologoServicio.agregar(crearOdontologoDto());
         List<OdontologoDto> listadoOdontologos = odontologoServicio.listar();
@@ -37,7 +44,7 @@ class OdontologoServicioImplTest {
     }
 
     @Test
-    @Transactional
+    @DisplayName("Listar odontologos inexistentes")
     void testListarOdontologoInexistente() {
         List<OdontologoDto> listadoOdontologos = odontologoServicio.listar();
         assertTrue(listadoOdontologos.isEmpty());
@@ -45,6 +52,7 @@ class OdontologoServicioImplTest {
 
     @Test
     @Transactional
+    @DisplayName("Buscar odontologo existente")
     void testBuscarOdontologoExistente() {
         OdontologoDto odontologo = odontologoServicio.agregar(crearOdontologoDto());
         OdontologoDto odontologoEncontrado = odontologoServicio.buscar(odontologo.getId());
@@ -52,21 +60,21 @@ class OdontologoServicioImplTest {
     }
 
     @Test
-    @Transactional
+    @DisplayName("Buscar odontologo inexistente")
     void testBuscarOdontologoInexistente() {
         assertThrows(ApiExcepcion.class, () -> odontologoServicio.buscar(-1L));
     }
 
     @Test
-    @Transactional
+    @DisplayName("Agregar odontologo exitoso")
     void testAgregarOdontologoExitoso() {
         OdontologoDto odontologo = odontologoServicio.agregar(crearOdontologoDto());
         assertTrue(odontologoRepositorio.findById(odontologo.getId()).isPresent());
     }
 
-    //TODO
     @Test
     @Transactional
+    @DisplayName("Agregar odontologo duplicado")
     void testAgregarOdontologoDuplicado() {
         OdontologoDto odontologo = crearOdontologoDto();
         odontologoServicio.agregar(odontologo);
@@ -74,7 +82,7 @@ class OdontologoServicioImplTest {
     }
 
     @Test
-    @Transactional
+    @DisplayName("Modificar odontologo existente")
     void testModificarOdontologoExistente() {
         OdontologoDto odontologo = odontologoServicio.agregar(crearOdontologoDto());
         odontologo.setNombre("Morty");
@@ -83,13 +91,13 @@ class OdontologoServicioImplTest {
     }
 
     @Test
-    @Transactional
+    @DisplayName("Modificar odontologo inexistente")
     void testModificarOdontologoInexistente() {
         assertThrows(ApiExcepcion.class, () -> odontologoServicio.modificar(-1L, crearOdontologoDto()));
     }
 
     @Test
-    @Transactional
+    @DisplayName("Eliminar odontologo existente")
     void testEliminarOdontologoExistente() {
         OdontologoDto odontologo = odontologoServicio.agregar(crearOdontologoDto());
         odontologoServicio.eliminar(odontologo.getId());
@@ -97,7 +105,7 @@ class OdontologoServicioImplTest {
     }
 
     @Test
-    @Transactional
+    @DisplayName("Eliminar odontologo inexistente")
     void testEliminarOdontologoInexistente() {
         assertDoesNotThrow(() -> odontologoServicio.eliminar(-1L));
     }
