@@ -71,6 +71,12 @@ buscarPacienteForm.addEventListener("submit", e => {
         return response.json();
       })
       .then((turnos = []) => {
+        if(!turnos.length) {
+          mensajeAsignarTurnoContainer.innerHTML = getAlertaHTML("No hay turnos disponibles. Por favor, intente más tarde.", "info");
+          mensajeAsignarTurnoContainer.classList.remove("d-none");
+          return;
+        }
+
         turnoIdSelect.innerHTML = `<option value="" disabled>--Por favor, escoja un turno--</option>`;
         turnos.forEach(({id, fechaHora, odontologo: {nombre, apellido}}) => {
           const option = document.createElement("option");
