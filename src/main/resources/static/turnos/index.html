@@ -12,11 +12,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/turnos/js/get_turno.js" defer></script>
-    <script
-      type="text/javascript"
-      src="/turnos/js/post_turno.js"
-      defer
-    ></script>
   </head>
   <body>
     <div class="container">
@@ -25,9 +20,7 @@
           <a class="nav-link" href="/">Inicio</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="/pacientes/guardar.html"
-            >Asignar turno</a
-          >
+          <a class="nav-link active" href="/turnos/index.html">Asignar turno</a>
         </li>
       </ul>
       <div class="row">
@@ -35,7 +28,7 @@
           class="col"
           style="background-color: #e6fffa; padding: 10px; border-radius: 3px"
         >
-          <h1>Asignar turno</h1>
+          <h1 class="h3">Asignar turno</h1>
           <form id="buscarPacienteForm">
             <div class="form-group">
               <label>Buscar paciente por DNI:</label>
@@ -52,6 +45,7 @@
           </form>
           <div id="datosPaciente" class="d-none"></div>
           <form id="asignarTurnoForm" class="d-none">
+            <hr />
             <div class="form-group">
               <label>Escoja un turno:</label>
               <select name="turnoId" id="turnoId" class="form-control" required>
@@ -68,6 +62,7 @@
       </div>
     </div>
     <template id="datosPacienteTemplate">
+      <hr />
       <h2>Paciente:</h2>
       <div>Nombre completo: <span data-nombre></span></div>
       <div>DNI: <span data-dni></span></div>
