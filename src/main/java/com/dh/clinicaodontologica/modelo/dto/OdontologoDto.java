@@ -19,5 +19,4 @@ public class OdontologoDto {
 
     @NotBlank(message = "La matricula no puede quedar en blanco")
     private String matricula;
-
 }
