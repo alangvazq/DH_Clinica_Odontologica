@@ -10,7 +10,6 @@ function findBy(id) {
 
   //Ante un submit del formulario se ejecutará la siguiente función
   formulario.addEventListener("submit", function (event) {
-    console.log("hola");
     //creamos un JSON que tendrá los datos del odontólogo
     const formData = {
       nombre: document.querySelector("#nombre").value,
@@ -18,7 +17,7 @@ function findBy(id) {
       matricula: document.querySelector("#matricula").value,
     };
     //invocamos utilizando la función fetch la API peliculas con el método PUT que guardará
-    //la película que enviaremos en formato JSON
+    //el odontólogo que enviaremos en formato JSON
     const url = "/api/v1/odontologos/" + id.toString();
     const settings = {
       method: "PUT",

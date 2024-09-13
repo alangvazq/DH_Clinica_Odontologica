@@ -10,7 +10,7 @@ function deleteBy(id) {
         throw new Error(mensaje || "Error, intente nuevamente");
       });
     }
-  });
+  }).catch((error) => alert(error));
 
   let row_id = "#tr_" + id;
   document.querySelector(row_id).remove();

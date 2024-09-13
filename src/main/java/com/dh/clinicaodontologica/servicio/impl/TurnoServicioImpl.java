@@ -37,7 +37,7 @@ public class TurnoServicioImpl implements ITurnoServicio {
     @Override
     public TurnoDto buscarUltimo() {
         LOGGER.debug("Listando turnos - Servicio");
-        Turno ultimoTurno = turnoRepositorio.findUltimoTurno().orElseThrow(() -> ApiExcepcion.recursoNoEncontrado("Aún hay turnos disponibles"));
+        Turno ultimoTurno = turnoRepositorio.findUltimoTurno().orElseThrow(() -> ApiExcepcion.recursoNoEncontrado("No hay turnos disponibles"));
         return turnoMapper.turnoADto(ultimoTurno);
     }
 

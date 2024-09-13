@@ -1,17 +1,27 @@
-function deleteBy(id) {
-  //con fetch invocamos a la API de odontólogos con el método DELETE
-  //pasándole el id en la URL
-  const url = "/api/v1/odontologos/" + id;
-  const settings = {
-    method: "DELETE",
-  };
+const URL_TURNOS = "/api/v1/turnos?odontologo="
 
-  fetch(url, settings).then((response) => {
+function crearTurno(odontologoId) {
+  fetch(`${URL_TURNOS}${odontologoId}`, {
+    headers: {
+      "Content-Type": "application/json"
+    },
+    method: "POST"
+  }).then((response) => {
     if (response.status >= 400) {
       return response.json().then(({ mensaje }) => {
         throw new Error(mensaje || "Error, intente nuevamente");
       });
     }
+
+    return response.json();
+  }).then((turnos) => {
+    const textAlerta = turnos.reduce((acumulador, {fechaHora, odontologo}, index) => {
+      if(index === 0) {
+        acumulador += `${odontologo.nombre} ${odontologo.apellido} tiene los siguientes nuevos turnos:\n`;
+      }
+      acumulador += `- ${fechaHora.replace("T", " ")}\n`
+      return acumulador;
+    }, "")
 
     fetch(URL_ULTIMO_TURNO).then((response) => {
       if(response.ok) return response.json();
@@ -31,11 +41,7 @@ function deleteBy(id) {
         <p>Fecha y hora: <span>${fechaHora.replace("T", " ")}</span></p>
         <p>Odontólogo: <span>${nombre} ${apellido}</span></p>
       `;
+      alert(textAlerta);
     }).catch((error) => alert(error));
-  })
-  .catch((error) => alert(error));
-
-  // borrar la fila de la odontólogo eliminada
-  let row_id = "#tr_" + id;
-  document.querySelector(row_id).remove();
+  }).catch(error => alert(error));
 }

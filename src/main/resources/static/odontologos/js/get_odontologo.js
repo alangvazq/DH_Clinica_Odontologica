@@ -23,54 +23,49 @@ window.addEventListener("load", function () {
           //dicho botón invocará a la función de JavaScript deleteByKey que se encargará
           //de llamar a la API para eliminar un odontólogo
           let deleteButton =
-            "<button" +
-            " id=" +
-            '"' +
-            "btn_delete_" +
-            odontologo.id +
-            '"' +
-            ' type="button" onclick="deleteBy(' +
-            odontologo.id +
-            ')" class="btn btn-danger btn_delete">' +
-            "&times" +
-            "</button>";
+            `<button
+              id="btn_delete_${odontologo.id}"
+              type="button"
+              class="btn btn-danger btn_delete"
+              onclick="deleteBy(${odontologo.id})"
+              >
+              &times
+            </button>`;
 
           //por cada odontólogo creamos un boton que muestra el id y que al hacerle clic invocará
           //a la función de JavaScript findBy que se encargará de buscar la odontólogo que queremos
           //modificar y mostrar los datos de la misma en un formulario.
-          let updateButton =
-            "<button" +
-            " id=" +
-            '"' +
-            "btn_id_" +
-            odontologo.id +
-            '"' +
-            ' type="button" onclick="findBy(' +
-            odontologo.id +
-            ')" class="btn btn-info btn_id">' +
-            odontologo.id +
-            "</button>";
+          let updateButton =`
+            <button
+              id="btn_id_${odontologo.id}"
+              type="button"
+              onclick="findBy(${odontologo.id})"
+              class="btn btn-info btn_id"
+              >
+              ${odontologo.id}
+            </button>`;
+
+          let crearTurnoButton =`
+          <button
+            id="btn_id_${odontologo.id}"
+            type="button"
+            onclick="crearTurno(${odontologo.id})"
+            class="btn btn-info btn_id"
+            >
+            Crear 3 turnos
+          </button>`;
 
           //armamos cada columna de la fila
           //como primer columna pondremos el botón modificar
           //luego los datos del odontólogo
           //como última columna el botón eliminar
           odontologoRow.innerHTML =
-            "<td>" +
-            updateButton +
-            "</td>" +
-            '<td class="td_nombre">' +
-            odontologo.nombre.toUpperCase() +
-            "</td>" +
-            '<td class="td_apellido">' +
-            odontologo.apellido.toUpperCase() +
-            "</td>" +
-            '<td class="td_matricula">' +
-            odontologo.matricula +
-            "</td>" +
-            "<td>" +
-            deleteButton +
-            "</td>";
+            `<td>${updateButton}</td>
+            <td class="td_nombre">${odontologo.nombre.toUpperCase()}</td>
+            <td class="td_apellido">${odontologo.apellido.toUpperCase()}</td>
+            <td class="td_matricula">${odontologo.matricula}</td
+            <td>${deleteButton}</td>
+            <td>${crearTurnoButton}</td>`;
         }
       });
   })();

@@ -126,7 +126,7 @@ asignarTurnoForm.addEventListener("submit", e => {
       const mensaje = `
       <p><b>¡Turno asignado con éxito!</b></p>
       <p>Paciente: ${paciente.nombre} ${paciente.apellido}</p>
-      <p>Fecha y hora: ${fechaHora}</p>
+      <p>Fecha y hora: ${fechaHora.replace("T", " ")}</p>
       <p>Odontólog@: ${odontologo.nombre} ${odontologo.apellido}</p>
       `
       mensajeAsignarTurnoContainer.innerHTML = getAlertaHTML(mensaje, "success");
